@@ -3,10 +3,12 @@ class_name TerrainGrid extends Node3D
 
 @export var grid_size:int=3
 @export var tile_size:int=10
-@export var details_height:int=5
-@export var base_height:int=3
+@export var base_map:Texture2D
+@export var base_map_height:int=1
 @export var details_noise: FastNoiseLite
+@export var details_noise_height:int=1
 @export var base_noise: FastNoiseLite
+@export var base_noise_height:int=1
 @export var follow:Node3D
 @export var material:ShaderMaterial
 
@@ -92,12 +94,29 @@ func create_tile_vertices(from:Vector2, to:Vector2, steps:int) -> Array[PackedVe
 	var vertices: Array[PackedVector3Array]
 	var half_size = int(float(tile_size) / 2)
 	
+	var base_map_size=0
+	var base_map_img:Image
+	if base_map:
+		base_map_size=base_map.get_size().x-1
+		base_map_img=base_map.get_image()
+	
 	for y in range(from.y, to.y, steps):
 		var row=PackedVector3Array()
 		for x in range(from.x, to.x, steps):
-			var detail_h = details_noise.get_noise_2d(x, y) * details_height
-			var base_h = base_noise.get_noise_2d(x, y) * base_height
-			var h = abs(base_h) + detail_h
+			
+			var x_rel=float(x)/float(tile_size)+0.5
+			var y_rel=float(y)/float(tile_size)+0.5
+			var x_img=x_rel*base_map_size
+			var y_img=x_rel*base_map_size
+			
+			var h = 0
+			var base_map_h = base_map_img.get_pixel(x_img,y_img).r * base_map_height if base_map_img else 0
+			var detail_h = details_noise.get_noise_2d(x, y) * details_noise_height if details_noise else 0
+			var base_h = base_noise.get_noise_2d(x, y) * base_noise_height if base_noise else 0
+			
+			h += base_map_h
+			h += base_h
+			h += detail_h
 			
 			var yi=int(y)
 			var xi=int(x)
@@ -205,3 +224,4 @@ func _process(_delta):
 		actual_tile.x = tile_x
 		actual_tile.y = tile_y
 		create_grid()
+
