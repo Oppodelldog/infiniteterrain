@@ -1,6 +1,9 @@
 @tool
 class_name TerrainGrid extends Node3D
 
+signal create_tile(x:int,y:int,size:float)
+signal delete_tile(x:int,y:int,size:float)
+
 @export var grid_extends_y:Vector2i
 @export var grid_extends_x:Vector2i
 @export var tile_size:int=10
@@ -76,6 +79,7 @@ func create_grid():
 			if not tiles.has(grid_y): tiles[grid_y]={}
 			if not tiles[grid_y].has(grid_x): tiles[grid_y][grid_x]={}
 			tiles[grid_y][grid_x]={"res":res, "tile":mesh_tile}
+			create_tile.emit(grid_x,grid_y,tile_size)
 			total_num_created+=1
 			
 	remove_tiles_by_distance()			
@@ -96,6 +100,7 @@ func remove_tiles_by_distance():
 				tile.queue_free()
 				remove_child(tile)
 				tiles[y].erase(x)
+				create_tile.emit(x,y,tile_size)
 			
 func remove_node_by_name(name):
 	var existing_tile = find_child(name+"*")
@@ -243,4 +248,5 @@ func _process(_delta):
 		actual_tile.x = tile_x
 		actual_tile.y = tile_y
 		create_grid()
+
 
