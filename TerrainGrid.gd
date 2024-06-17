@@ -11,10 +11,12 @@ class_name TerrainGrid extends Node3D
 @export var base_noise_height:int=1
 @export var follow:Node3D
 @export var material:ShaderMaterial
+@export var generate_colliders:bool
+@export var cleanup_distance:float
 
 var actual_tile:Vector2
 var height_overrride:Dictionary
-var actual_res:Dictionary
+var tiles:Dictionary={}
 	
 func _run():
 	create_grid()
@@ -29,8 +31,7 @@ func create_grid():
 	
 	var total_num_verts={}
 	var total_num_created=0
-	#clear_children()
-	for y in range(-half_grid_size, half_grid_size + 1):
+	for y in range(-half_grid_size-1, half_grid_size + 1):
 		for x in range(-half_grid_size, half_grid_size + 1):
 			var grid_x     = actual_tile.x + x
 			var grid_y     = actual_tile.y + y
@@ -42,7 +43,7 @@ func create_grid():
 			var distance   = follow_pos.distance_to(v_center)
 
 			var res = tile_size
-			var create_collider=true
+			var create_collider=generate_colliders
 			if distance > tile_size*2:
 				res=20
 				#create_collider=false
@@ -50,7 +51,7 @@ func create_grid():
 				res=2
 				#create_collider=false
 				
-			#if actual_res.has(y) and actual_res[y].has(x) and res == actual_res[y][x].res: continue
+			#if tiles.has(y) and tiles[y].has(x) and res == tiles[y][x].res: continue
 										
 			var steps     = int(float(tile_size) / float(res))
 			var tile_verts = create_tile_vertices(v_from, v_to, steps)
@@ -60,33 +61,52 @@ func create_grid():
 				total_num_verts[res]+=row.size()
 			
 			var tile_name="mesh_%s|%s" % [grid_y, grid_x]
+		
 			remove_node_by_name(tile_name)
 			var mesh_tile = create_mesh_tile(steps, tile_verts)
-			mesh_tile.name=tile_name
-			
+			mesh_tile.name="mesh_%s|%s-%s" % [grid_y, grid_x, Time.get_ticks_msec()]
+			print("created tile %s" % mesh_tile)
+						
 			if create_collider: 
 				var collider_name="collider_%s|%s" % [grid_y, grid_x]
 				remove_node_by_name(tile_name)
 				var collider = create_collider_tile(grid_x, grid_y, res, tile_verts)
-				collider.name=collider_name
-				
-			
-			if not actual_res.has(y): actual_res[y]={}
-			if not actual_res[y].has(x): actual_res[y][x]={}
-			actual_res[y][x]={"res":res}
-			total_num_created+=1
+				collider.name="mesh_%s|%s-%s" % [grid_y, grid_x, Time.get_ticks_msec()]
 		
+			if not tiles.has(grid_y): tiles[grid_y]={}
+			if not tiles[grid_y].has(grid_x): tiles[grid_y][grid_x]={}
+			tiles[grid_y][grid_x]={"res":res, "tile":mesh_tile}
+			total_num_created+=1
+			
+			remove_tiles_by_distance()			
 
 	print("grid generation (%s vertices) (%s tiles) in %s" % [total_num_verts,total_num_created,Time.get_ticks_msec() - start])
-
+	
+func remove_tiles_by_distance():
+	if cleanup_distance==0: return
+	
+	for y in tiles.keys():
+		for x in tiles[y].keys():
+			var tile_pos = Vector3(x*tile_size,0,y*tile_size)
+			var tile_distance=follow.global_position.distance_to(tile_pos)
+			
+			if tile_distance>=cleanup_distance:
+				var tile=tiles[y][x].tile
+				print("cleanup tile %s" % tile.name)
+				tile.queue_free()
+				remove_child(tile)
+				tiles[y].erase(x)
+			
 func remove_node_by_name(name):
-	var existing_tile = find_child(name)
+	var existing_tile = find_child(name+"*")
 	if existing_tile: 
+		print("remove by name %s"%existing_tile.name)
 		remove_child(existing_tile)
-		existing_tile.free()
+		existing_tile.queue_free()
 				
 func clear_children():
 	for n in get_children():
+		print("remove child %s" % n.name)
 		remove_child(n)
 		n.queue_free()
 		
@@ -158,7 +178,6 @@ func raise_terrain(x1:int,x2:int,y1:int,y2:int,h):
 func create_mesh_tile(steps:int, tile_verts: Array[PackedVector3Array])->MeshInstance3D:
 	var verts = PackedVector3Array()
 	var uvs = PackedVector2Array()
-
 	
 	for y in range(tile_verts.size()-1):
 		var	num_verts_per_row=tile_verts[y].size()
