@@ -1,7 +1,8 @@
 @tool
 class_name TerrainGrid extends Node3D
 
-@export var grid_size:int=3
+@export var grid_extends_y:Vector2i
+@export var grid_extends_x:Vector2i
 @export var tile_size:int=10
 @export var base_map:Texture2D
 @export var base_map_height:int=1
@@ -26,13 +27,12 @@ func _ready():
 
 func create_grid():
 	var start =Time.get_ticks_msec()
-	var half_grid_size = int(float(grid_size) / 2)
 	var half_tile_size = int(float(tile_size) / 2)
 	
 	var total_num_verts={}
 	var total_num_created=0
-	for y in range(-half_grid_size-1, half_grid_size + 1):
-		for x in range(-half_grid_size, half_grid_size + 1):
+	for y in range(grid_extends_y.x, grid_extends_y.y + 1):
+		for x in range(grid_extends_x.x, grid_extends_x.y + 1):
 			var grid_x     = actual_tile.x + x
 			var grid_y     = actual_tile.y + y
 			var follow_y   = follow.global_position.y
@@ -51,7 +51,7 @@ func create_grid():
 				res=2
 				#create_collider=false
 				
-			#if tiles.has(y) and tiles[y].has(x) and res == tiles[y][x].res: continue
+			if tiles.has(grid_y) and tiles[grid_y].has(grid_x): continue
 										
 			var steps     = int(float(tile_size) / float(res))
 			var tile_verts = create_tile_vertices(v_from, v_to, steps)
@@ -78,7 +78,7 @@ func create_grid():
 			tiles[grid_y][grid_x]={"res":res, "tile":mesh_tile}
 			total_num_created+=1
 			
-			remove_tiles_by_distance()			
+	remove_tiles_by_distance()			
 
 	print("grid generation (%s vertices) (%s tiles) in %s" % [total_num_verts,total_num_created,Time.get_ticks_msec() - start])
 	
