@@ -1,13 +1,15 @@
 @tool
 class_name TerrainGrid extends Node3D
 
-signal create_tile(x:int,y:int,size:float)
-signal delete_tile(x:int,y:int,size:float)
+signal create_tile(x:int,y:int,grid:TerrainGrid)
+signal delete_tile(x:int,y:int,grid:TerrainGrid)
 
 @export var grid_extends_y:Vector2i
 @export var grid_extends_x:Vector2i
 @export var tile_size:int=10
 @export var base_map:Texture2D
+@export var base_map_image:Image
+@export var base_map_image_size:int
 @export var base_map_height:int=1
 @export var details_noise: FastNoiseLite
 @export var details_noise_height:int=1
@@ -17,32 +19,55 @@ signal delete_tile(x:int,y:int,size:float)
 @export var material:ShaderMaterial
 @export var generate_colliders:bool
 @export var cleanup_distance:float
+@export var create_on_ready:bool
 
 var actual_tile:Vector2
 var height_overrride:Dictionary
 var tiles:Dictionary={}
+var half_tile_size:float
 	
 func _run():
 	create_grid()
 	
 func _ready():	
-	create_grid()
+	if create_on_ready: create_grid()
+	
+func get_from(grid_x:int,grid_y:int)->Vector2:
+	return Vector2(float(grid_x * tile_size - half_tile_size), float(grid_y * tile_size - half_tile_size))
+	
+func get_to(from:Vector2)->Vector2: 
+	return Vector2(from.x + tile_size + 1, from.y + tile_size + 1)
 
+func get_to_exclusive(from:Vector2)->Vector2: 
+	return Vector2(from.x + tile_size, from.y + tile_size)
+	
+func grid_to_global_pos(grid:Vector2)->Vector2:
+	return grid * tile_size
+	
 func create_grid():
+	if not base_map_image and base_map:
+		base_map_image  = base_map.get_image()
+		base_map_image_size = base_map_image.get_size().x-1
+		
+	if half_tile_size==0:
+		half_tile_size = int(float(tile_size) / 2)
+	
 	var start =Time.get_ticks_msec()
-	var half_tile_size = int(float(tile_size) / 2)
 	
 	var total_num_verts={}
 	var total_num_created=0
+	var f = Vector3.ZERO
+	if follow: f = follow.global_position
+	
 	for y in range(grid_extends_y.x, grid_extends_y.y + 1):
 		for x in range(grid_extends_x.x, grid_extends_x.y + 1):
 			var grid_x     = actual_tile.x + x
 			var grid_y     = actual_tile.y + y
-			var follow_y   = follow.global_position.y
-			var v_from     = Vector2(float(grid_x * tile_size - half_tile_size), float(grid_y * tile_size - half_tile_size))
-			var v_to       = Vector2(v_from.x + tile_size + 1, v_from.y + tile_size + 1)
+			var follow_y   = f.y
+			var v_from     = get_from(grid_x,grid_y)
+			var v_to       = get_to(v_from)
 			var v_center   = Vector2(v_from.x + half_tile_size, v_from.y + half_tile_size)
-			var follow_pos = Vector2(follow.global_position.x,follow.global_position.z)
+			var follow_pos = Vector2(f.x,f.z)
 			var distance   = follow_pos.distance_to(v_center)
 
 			var res = tile_size
@@ -79,7 +104,7 @@ func create_grid():
 			if not tiles.has(grid_y): tiles[grid_y]={}
 			if not tiles[grid_y].has(grid_x): tiles[grid_y][grid_x]={}
 			tiles[grid_y][grid_x]={"res":res, "tile":mesh_tile}
-			create_tile.emit(grid_x,grid_y,tile_size)
+			create_tile.emit(grid_x,grid_y,self)
 			total_num_created+=1
 			
 	remove_tiles_by_distance()			
@@ -100,7 +125,7 @@ func remove_tiles_by_distance():
 				tile.queue_free()
 				remove_child(tile)
 				tiles[y].erase(x)
-				create_tile.emit(x,y,tile_size)
+				delete_tile.emit(x,y,self)
 			
 func remove_node_by_name(name):
 	var existing_tile = find_child(name+"*")
@@ -114,35 +139,33 @@ func clear_children():
 		print("remove child %s" % n.name)
 		remove_child(n)
 		n.queue_free()
-		
+
+func height(x:float,y:float)->float:
+	var x_rel=float(x)/float(tile_size)+0.5
+	var y_rel=float(y)/float(tile_size)+0.5
+	var x_img=x_rel*base_map_image_size
+	var y_img=x_rel*base_map_image_size
+	
+	var h = 0
+	var base_map_h = base_map_image.get_pixel(x_img,y_img).r * base_map_height if base_map_image else 0
+	var detail_h = details_noise.get_noise_2d(x, y) * details_noise_height if details_noise else 0
+	var base_h = base_noise.get_noise_2d(x, y) * base_noise_height if base_noise else 0
+	
+	h += base_map_h
+	h += base_h
+	h += detail_h
+	
+	return h
+	
 func create_tile_vertices(from:Vector2, to:Vector2, steps:int) -> Array[PackedVector3Array]:
 	var vertices: Array[PackedVector3Array]
 	var half_size = int(float(tile_size) / 2)
-	
-	var base_map_size=0
-	var base_map_img:Image
-	if base_map:
-		base_map_size=base_map.get_size().x-1
-		base_map_img=base_map.get_image()
-	
+		
 	for y in range(from.y, to.y, steps):
 		var row=PackedVector3Array()
 		for x in range(from.x, to.x, steps):
 			
-			var x_rel=float(x)/float(tile_size)+0.5
-			var y_rel=float(y)/float(tile_size)+0.5
-			var x_img=x_rel*base_map_size
-			var y_img=x_rel*base_map_size
-			
-			var h = 0
-			var base_map_h = base_map_img.get_pixel(x_img,y_img).r * base_map_height if base_map_img else 0
-			var detail_h = details_noise.get_noise_2d(x, y) * details_noise_height if details_noise else 0
-			var base_h = base_noise.get_noise_2d(x, y) * base_noise_height if base_noise else 0
-			
-			h += base_map_h
-			h += base_h
-			h += detail_h
-			
+			var h = height(x,y)
 			var yi=int(y)
 			var xi=int(x)
 			if height_overrride.has(yi):
@@ -240,8 +263,11 @@ func create_mesh_tile(steps:int, tile_verts: Array[PackedVector3Array])->MeshIns
 	return mesh_instance
 	
 func _process(_delta):
-	var tile_x = int(follow.global_position.x / tile_size)
-	var tile_y = int(follow.global_position.z / tile_size)
+	var tile_x:int
+	var tile_y:int
+	if follow:
+		tile_x = int(follow.global_position.x / tile_size)
+		tile_y = int(follow.global_position.z / tile_size)
 	
 	if tile_x != actual_tile.x or tile_y != actual_tile.y:
 		print("center tile changed from %s,%s to %s,%s" % [actual_tile.x, actual_tile.y, tile_x, tile_y])
