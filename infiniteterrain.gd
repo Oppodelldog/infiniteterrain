@@ -18,7 +18,7 @@ func _enter_tree():
 func on_generate_terrain():
 	for terrain in get_tree().edited_scene_root.find_children("*","TerrainGrid",true,false):
 		print("generate terrain %s " % terrain.name)
-		terrain.create_grid()
+		terrain.create_new()
 		
 func _exit_tree():
 	# Clean-up of the plugin goes here.
