@@ -42,10 +42,7 @@ shader_parameter/tex1_normal_low = ExtResource("8_ufui4")
 
 [node name="Terrain" type="StaticBody3D" parent="." node_paths=PackedStringArray("follow")]
 script = ExtResource("1_87sfj")
-grid_size = 5
 tile_size = 100
-details_height = 20
-base_height = 1000
 details_noise = ExtResource("2_56elw")
 base_noise = ExtResource("3_chwfl")
 follow = NodePath("../Follow")
