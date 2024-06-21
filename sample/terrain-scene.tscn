@@ -1,42 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://d0k0d5nrrfrj1"]
+[gd_scene load_steps=5 format=3 uid="uid://d0k0d5nrrfrj1"]
 
 [ext_resource type="Script" path="res://addons/infiniteterrain/TerrainGrid.gd" id="1_87sfj"]
 [ext_resource type="FastNoiseLite" uid="uid://dqe4wuqkqh8at" path="res://addons/infiniteterrain/terrain-details.tres" id="2_56elw"]
 [ext_resource type="FastNoiseLite" uid="uid://d3ngfc6flja53" path="res://addons/infiniteterrain/terrain-basic.tres" id="3_chwfl"]
-[ext_resource type="Shader" uid="uid://376tm1qxptr6" path="res://addons/infiniteterrain/terrain.tres" id="4_yxwmn"]
-[ext_resource type="Texture2D" uid="uid://dadogiyvstmo3" path="res://addons/infiniteterrain/sample/tex_grass_high.jpg" id="5_qxtp7"]
-[ext_resource type="Texture2D" uid="uid://d1f1ilijorg26" path="res://addons/infiniteterrain/sample/tex_soil_low.jpg" id="5_x75ux"]
-[ext_resource type="Texture2D" uid="uid://lessclu68wai" path="res://addons/infiniteterrain/sample/tex_soil_high.jpg" id="6_oqbc1"]
-[ext_resource type="Texture2D" uid="uid://cv55xvv8lrkqd" path="res://addons/infiniteterrain/sample/tex_grass_low.jpg" id="6_tx4ic"]
-[ext_resource type="Texture2D" uid="uid://bbgcecqk1caot" path="res://addons/infiniteterrain/sample/tex_grass_high_normal.jpg" id="7_e55vd"]
-[ext_resource type="Texture2D" uid="uid://c6f1667evb44v" path="res://addons/infiniteterrain/sample/tex_grass_low_normal.jpg" id="8_ufui4"]
-[ext_resource type="Texture2D" uid="uid://b2do0buuy7335" path="res://addons/infiniteterrain/sample/tex_soil_high_normal.jpg" id="11_bw7mx"]
-[ext_resource type="Texture2D" uid="uid://pdrg3sln5qx2" path="res://addons/infiniteterrain/sample/tex_soil_low_normal.jpg" id="12_80fra"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k2cba"]
-render_priority = 0
-shader = ExtResource("4_yxwmn")
-shader_parameter/texture_split = 6.48
-shader_parameter/tex2_high_uv_scale = 3.0
-shader_parameter/tex2_low_uv_scale = 1.0
-shader_parameter/tex2_res_min_distance = null
-shader_parameter/tex2_res_max_distance = 1.52
-shader_parameter/tex1_high_uv_scale = 2.07
-shader_parameter/tex1_low_uv_scale2 = 2.0
-shader_parameter/tex1_res_min_distance = null
-shader_parameter/tex1_res_max_distance = 30.0
-shader_parameter/metallic = null
-shader_parameter/roughness = null
-shader_parameter/specular = null
-shader_parameter/normal_strength = 0.8
-shader_parameter/tex2_high = ExtResource("6_oqbc1")
-shader_parameter/tex2_low = ExtResource("5_x75ux")
-shader_parameter/tex1_high = ExtResource("5_qxtp7")
-shader_parameter/tex1_low = ExtResource("6_tx4ic")
-shader_parameter/tex2_normal_high = ExtResource("11_bw7mx")
-shader_parameter/tex2_normal_low = ExtResource("12_80fra")
-shader_parameter/tex1_normal_high = ExtResource("7_e55vd")
-shader_parameter/tex1_normal_low = ExtResource("8_ufui4")
+[ext_resource type="Material" uid="uid://b0gvxisevlo1p" path="res://addons/infiniteterrain/sample/terrain-material.tres" id="4_35buh"]
 
 [node name="Sample-terrain-scene" type="Node3D"]
 
@@ -50,6 +17,6 @@ details_noise = ExtResource("2_56elw")
 details_noise_height = 10
 base_noise = ExtResource("3_chwfl")
 follow = NodePath("../Follow")
-material = SubResource("ShaderMaterial_k2cba")
+material = ExtResource("4_35buh")
 
 [node name="Follow" type="Node3D" parent="."]

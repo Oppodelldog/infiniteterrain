@@ -4,16 +4,15 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1f1ilijorg26"
 path.s3tc="res://.godot/imported/tex_soil_low.jpg-c2c71fb0f7164e636c99f7fc9cde6fc7.s3tc.ctex"
-path.etc2="res://.godot/imported/tex_soil_low.jpg-c2c71fb0f7164e636c99f7fc9cde6fc7.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://addons/infiniteterrain/sample/tex_soil_low.jpg"
-dest_files=["res://.godot/imported/tex_soil_low.jpg-c2c71fb0f7164e636c99f7fc9cde6fc7.s3tc.ctex", "res://.godot/imported/tex_soil_low.jpg-c2c71fb0f7164e636c99f7fc9cde6fc7.etc2.ctex"]
+dest_files=["res://.godot/imported/tex_soil_low.jpg-c2c71fb0f7164e636c99f7fc9cde6fc7.s3tc.ctex"]
 
 [params]
 
