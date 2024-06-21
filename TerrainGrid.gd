@@ -30,7 +30,7 @@ func _run():
 	create_grid()
 	
 func _ready():	
-	if create_on_ready: create_grid()
+	if create_on_ready: create_new()
 	
 func get_from(grid_x:int,grid_y:int)->Vector2:
 	return Vector2(float(grid_x * tile_size - half_tile_size), float(grid_y * tile_size - half_tile_size))
@@ -43,6 +43,11 @@ func get_to_exclusive(from:Vector2)->Vector2:
 	
 func grid_to_global_pos(grid:Vector2)->Vector2:
 	return grid * tile_size
+	
+func create_new():
+	tiles={}
+	height_overrride={}
+	create_grid()
 	
 func create_grid():
 	if not base_map_image and base_map:
@@ -79,7 +84,7 @@ func create_grid():
 				res=2
 				#create_collider=false
 				
-			if tiles.has(grid_y) and tiles[grid_y].has(grid_x): continue
+			if tiles and tiles.has(grid_y) and tiles[grid_y].has(grid_x): continue
 										
 			var steps     = int(float(tile_size) / float(res))
 			var tile_verts = create_tile_vertices(v_from, v_to, steps)
@@ -100,7 +105,7 @@ func create_grid():
 				remove_node_by_name(tile_name)
 				var collider = create_collider_tile(grid_x, grid_y, res, tile_verts)
 				collider.name="mesh_%s|%s-%s" % [grid_y, grid_x, Time.get_ticks_msec()]
-		
+			if not tiles: tiles={}
 			if not tiles.has(grid_y): tiles[grid_y]={}
 			if not tiles[grid_y].has(grid_x): tiles[grid_y][grid_x]={}
 			tiles[grid_y][grid_x]={"res":res, "tile":mesh_tile}
@@ -143,8 +148,8 @@ func clear_children():
 func height(x:float,y:float)->float:
 	var x_rel=float(x)/float(tile_size)+0.5
 	var y_rel=float(y)/float(tile_size)+0.5
-	var x_img=x_rel*base_map_image_size
-	var y_img=x_rel*base_map_image_size
+	var x_img=x_rel*base_map_image_size if base_map_image_size else 0
+	var y_img=x_rel*base_map_image_size if base_map_image_size else 0
 	
 	var h = 0
 	var base_map_h = base_map_image.get_pixel(x_img,y_img).r * base_map_height if base_map_image else 0
