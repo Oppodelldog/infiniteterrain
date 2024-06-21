@@ -8,8 +8,6 @@ signal delete_tile(x:int,y:int,grid:TerrainGrid)
 @export var grid_extends_x:Vector2i
 @export var tile_size:int=10
 @export var base_map:Texture2D
-@export var base_map_image:Image
-@export var base_map_image_size:int
 @export var base_map_height:int=1
 @export var details_noise: FastNoiseLite
 @export var details_noise_height:int=1
@@ -20,6 +18,9 @@ signal delete_tile(x:int,y:int,grid:TerrainGrid)
 @export var generate_colliders:bool
 @export var cleanup_distance:float
 @export var create_on_ready:bool
+
+var base_map_image_size:int
+var base_map_image:Image
 
 var actual_tile:Vector2
 var height_overrride:Dictionary
@@ -47,6 +48,7 @@ func grid_to_global_pos(grid:Vector2)->Vector2:
 func create_new():
 	tiles={}
 	height_overrride={}
+	clear_children()
 	create_grid()
 	
 func create_grid():
@@ -77,12 +79,6 @@ func create_grid():
 
 			var res = tile_size
 			var create_collider=generate_colliders
-			if distance > tile_size*2:
-				res=20
-				#create_collider=false
-			if distance > tile_size*4:
-				res=2
-				#create_collider=false
 				
 			if tiles and tiles.has(grid_y) and tiles[grid_y].has(grid_x): continue
 										
@@ -112,9 +108,9 @@ func create_grid():
 			create_tile.emit(grid_x,grid_y,self)
 			total_num_created+=1
 			
-	remove_tiles_by_distance()			
+	remove_tiles_by_distance()
 
-	print("grid generation (%s vertices) (%s tiles) in %s" % [total_num_verts,total_num_created,Time.get_ticks_msec() - start])
+	print("grid generation (%s vertices) (%s tiles) in %s" % [total_num_verts, total_num_created, Time.get_ticks_msec() - start])
 	
 func remove_tiles_by_distance():
 	if cleanup_distance==0: return
