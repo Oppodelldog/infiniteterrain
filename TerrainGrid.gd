@@ -24,6 +24,7 @@ var base_map_image:Image
 
 var actual_tile:Vector2
 var height_overrride:Dictionary
+#tiles[y][x]={"res":10, "mesh":mesh_instance,"high":10,"low":-10}
 var tiles:Dictionary={}
 var half_tile_size:float
 	
@@ -44,6 +45,12 @@ func get_to_exclusive(from:Vector2)->Vector2:
 	
 func grid_to_global_pos(grid:Vector2)->Vector2:
 	return grid * tile_size
+	
+func get_high(x:int,y:int)->float:
+	return tiles[y][x].high
+	
+func get_low(x:int,y:int)->float:
+	return tiles[y][x].low
 	
 func create_new():
 	tiles={}
@@ -83,28 +90,27 @@ func create_grid():
 			if tiles and tiles.has(grid_y) and tiles[grid_y].has(grid_x): continue
 										
 			var steps     = int(float(tile_size) / float(res))
-			var tile_verts = create_tile_vertices(v_from, v_to, steps)
-			
-			for row in tile_verts:
+			var tile_data = create_tile_vertices(v_from, v_to, steps)
+			for row in tile_data:
 				if not total_num_verts.has(res): total_num_verts[res]=0
 				total_num_verts[res]+=row.size()
 			
 			var tile_name="mesh_%s|%s" % [grid_y, grid_x]
 		
 			remove_node_by_name(tile_name)
-			var mesh_tile = create_mesh_tile(steps, tile_verts)
+			var mesh_tile = create_mesh_tile(steps, tile_data)
 			mesh_tile.name="mesh_%s|%s-%s" % [grid_y, grid_x, Time.get_ticks_msec()]
 			print("created tile %s" % mesh_tile)
 						
 			if create_collider: 
 				var collider_name="collider_%s|%s" % [grid_y, grid_x]
 				remove_node_by_name(tile_name)
-				var collider = create_collider_tile(grid_x, grid_y, res, tile_verts)
+				var collider = create_collider_tile(grid_x, grid_y, res, tile_data)
 				collider.name="mesh_%s|%s-%s" % [grid_y, grid_x, Time.get_ticks_msec()]
 			if not tiles: tiles={}
 			if not tiles.has(grid_y): tiles[grid_y]={}
 			if not tiles[grid_y].has(grid_x): tiles[grid_y][grid_x]={}
-			tiles[grid_y][grid_x]={"res":res, "tile":mesh_tile}
+			tiles[grid_y][grid_x]={"res":res, "tile":mesh_tile,"high":tile_data.high,"low":tile_data.low}
 			create_tile.emit(grid_x,grid_y,self)
 			total_num_created+=1
 			
@@ -158,9 +164,16 @@ func height(x:float,y:float)->float:
 	
 	return h
 	
-func create_tile_vertices(from:Vector2, to:Vector2, steps:int) -> Array[PackedVector3Array]:
+class Tiledata:
+	var verts:Array[PackedVector3Array]
+	var high:float
+	var low:float
+
+func create_tile_vertices(from:Vector2, to:Vector2, steps:int) -> Tiledata:
 	var vertices: Array[PackedVector3Array]
 	var half_size = int(float(tile_size) / 2)
+	var max_h=-10000000
+	var min_h=10000000
 		
 	for y in range(from.y, to.y, steps):
 		var row=PackedVector3Array()
@@ -173,13 +186,19 @@ func create_tile_vertices(from:Vector2, to:Vector2, steps:int) -> Array[PackedVe
 				if height_overrride[yi].has(xi):
 					h=height_overrride[yi][xi]
 			row.push_back(Vector3(xi, h, yi))
+			if h>max_h: max_h=h
+			if h<min_h:min_h=h
 		vertices.push_back(row)
+		
+	var data=Tiledata.new()
+	data.verts=vertices
+	data.high=max_h
+	data.low=min_h
+	return data
 
-	return vertices
-
-func create_collider_tile(grid_x:int, grid_y:int,res:int, tile_verts:Array[PackedVector3Array])->CollisionShape3D:
+func create_collider_tile(grid_x:int, grid_y:int,res:int, tile_data:Tiledata)->CollisionShape3D:
 	var heights=PackedFloat32Array()
-	for row in tile_verts:
+	for row in tile_data.verts:
 		for v in row:
 			heights.push_back(v.y)
 
@@ -204,17 +223,17 @@ func raise_terrain(x1:int,x2:int,y1:int,y2:int,h):
 			if not height_overrride[y].has(x): height_overrride[y][x]={}
 			height_overrride[y][x]=h
 
-func create_mesh_tile(steps:int, tile_verts: Array[PackedVector3Array])->MeshInstance3D:
+func create_mesh_tile(steps:int, tile_data: Tiledata)->MeshInstance3D:
 	var verts = PackedVector3Array()
 	var uvs = PackedVector2Array()
 	
-	for y in range(tile_verts.size()-1):
-		var	num_verts_per_row=tile_verts[y].size()
-		for x in range(tile_verts[y].size()-1):			
-			var top_left = tile_verts[y][x]
-			var bottom_left = tile_verts[y+1][x]
-			var top_right = tile_verts[y][x+1]
-			var bottom_right = tile_verts[y+1][x+1]
+	for y in range(tile_data.verts.size()-1):
+		var	num_verts_per_row=tile_data.verts[y].size()
+		for x in range(tile_data.verts[y].size()-1):			
+			var top_left = tile_data.verts[y][x]
+			var bottom_left = tile_data.verts[y+1][x]
+			var top_right = tile_data.verts[y][x+1]
+			var bottom_right = tile_data.verts[y+1][x+1]
 
 			# first triangle
 			verts.push_back(top_left)
