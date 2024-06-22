@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dnjsn0vkr6ml6"]
 
-[node name="Plugin-dock" type="Control"]
+[node name="Infinite-Terrain" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,3 +13,10 @@ layout_mode = 0
 offset_right = 493.0
 offset_bottom = 192.0
 text = "Generate Terrain"
+
+[node name="Button2" type="Button" parent="."]
+layout_mode = 0
+offset_top = 207.0
+offset_right = 493.0
+offset_bottom = 399.0
+text = "Run Decorators"

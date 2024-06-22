@@ -1,6 +1,7 @@
+@tool
 class_name Decorator extends Node
 
-@export var decoration:PackedScene
+@export var decoration:Array[PackedScene]
 @export var amount:int=10
 @export var min_height:float
 @export var max_height:float
@@ -9,7 +10,10 @@ class_name Decorator extends Node
 @export var min_scale:float
 @export var max_scale:float
 
-func _on_terrain_create_tile(x:int, y:int, grid:TerrainGrid):
+func select_decoration()->PackedScene:
+	return decoration.pick_random()
+
+func decorate_tile(x:int, y:int, grid:TerrainGrid):
 	var container = Node3D.new()
 	container.name=container_name(x,y)
 	add_child(container)
@@ -18,6 +22,7 @@ func _on_terrain_create_tile(x:int, y:int, grid:TerrainGrid):
 	var to=grid.get_to_exclusive(from)
 	
 	for _i in range(amount):
+		var decoration = select_decoration()
 		var deco     = decoration.instantiate()
 		var random_x = randf_range(from.x, to.x)
 		var random_y = randf_range(from.y, to.y)
@@ -35,8 +40,8 @@ func _on_terrain_create_tile(x:int, y:int, grid:TerrainGrid):
 		deco.rotation.y = y_rot
 		deco.scale      = Vector3.ONE*scale
 		container.add_child(deco)
-
-func _on_terrain_delete_tile(x, y, _grid):
+		
+func undecorate_tile(x:int, y:int, grid:TerrainGrid):
 	var container = find_child(container_name(x,y),false,false)
 	if container:
 		container.queue_free()

@@ -1,6 +1,7 @@
 @tool
 class_name TerrainGrid extends Node3D
 
+signal terrain_created
 signal create_tile(x:int,y:int,grid:TerrainGrid)
 signal delete_tile(x:int,y:int,grid:TerrainGrid)
 
@@ -46,17 +47,24 @@ func get_to_exclusive(from:Vector2)->Vector2:
 func grid_to_global_pos(grid:Vector2)->Vector2:
 	return grid * tile_size
 	
-func get_high(x:int,y:int)->float:
+func get_actual_tile()->Vector2:
+	return actual_tile
+	
+func get_high(x:int,y:int)->float:	
 	return tiles[y][x].high
 	
 func get_low(x:int,y:int)->float:
 	return tiles[y][x].low
+	
+func tile_exists(x:int,y:int)->bool:
+	return tiles.has(y) and tiles[y].has(x)
 	
 func create_new():
 	tiles={}
 	height_overrride={}
 	clear_children()
 	create_grid()
+	terrain_created.emit()
 	
 func create_grid():
 	if not base_map_image and base_map:
@@ -75,8 +83,8 @@ func create_grid():
 	
 	for y in range(grid_extends_y.x, grid_extends_y.y + 1):
 		for x in range(grid_extends_x.x, grid_extends_x.y + 1):
-			var grid_x     = actual_tile.x + x
-			var grid_y     = actual_tile.y + y
+			var grid_x     = int(actual_tile.x + x)
+			var grid_y     = int(actual_tile.y + y)
 			var follow_y   = f.y
 			var v_from     = get_from(grid_x,grid_y)
 			var v_to       = get_to(v_from)
@@ -91,7 +99,7 @@ func create_grid():
 										
 			var steps     = int(float(tile_size) / float(res))
 			var tile_data = create_tile_vertices(v_from, v_to, steps)
-			for row in tile_data:
+			for row in tile_data.verts:
 				if not total_num_verts.has(res): total_num_verts[res]=0
 				total_num_verts[res]+=row.size()
 			
