@@ -1,6 +1,7 @@
 @tool
 class_name TerrainGrid extends Node3D
 
+signal before_create
 signal terrain_created
 signal create_tile(x:int,y:int,grid:TerrainGrid)
 signal delete_tile(x:int,y:int,grid:TerrainGrid)
@@ -60,6 +61,7 @@ func tile_exists(x:int,y:int)->bool:
 	return tiles.has(y) and tiles[y].has(x)
 	
 func create_new():
+	before_create.emit()
 	tiles={}
 	height_overrride={}
 	clear_children()
