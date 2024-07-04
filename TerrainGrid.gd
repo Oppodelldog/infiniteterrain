@@ -69,6 +69,8 @@ func create_new():
 	terrain_created.emit(self)
 	
 func create_grid():
+	if base_map_image and base_map_image.is_compressed():
+		base_map_image.decompress()
 	if not base_map_image and base_map:
 		base_map_image  = base_map.get_image()
 		base_map_image_size = base_map_image.get_size().x-1
@@ -161,14 +163,11 @@ func clear_children():
 		n.queue_free()
 
 func height(x:float,y:float)->float:
-	var x_rel=float(x)/float(tile_size)+0.5
-	var y_rel=float(y)/float(tile_size)+0.5
+	var x_rel=wrapf(float(x)/float(tile_size)+0.5,0,1)
+	var y_rel=wrapf(float(y)/float(tile_size)+0.5,0,1)
+	
 	var x_img=x_rel*base_map_image_size if base_map_image_size else 0
-	var y_img=x_rel*base_map_image_size if base_map_image_size else 0
-	if x_img <0: return 0
-	if y_img <0: return 0
-	if x_img >base_map_image_size: return 0
-	if y_img >base_map_image_size: return 0
+	var y_img=y_rel*base_map_image_size if base_map_image_size else 0
 	
 	var h = 0
 	var base_map_h = base_map_image.get_pixel(x_img,y_img).r * base_map_height if base_map_image else 0
