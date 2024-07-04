@@ -160,6 +160,10 @@ func height(x:float,y:float)->float:
 	var y_rel=float(y)/float(tile_size)+0.5
 	var x_img=x_rel*base_map_image_size if base_map_image_size else 0
 	var y_img=x_rel*base_map_image_size if base_map_image_size else 0
+	if x_img <0: return 0
+	if y_img <0: return 0
+	if x_img >base_map_image_size: return 0
+	if y_img >base_map_image_size: return 0
 	
 	var h = 0
 	var base_map_h = base_map_image.get_pixel(x_img,y_img).r * base_map_height if base_map_image else 0
