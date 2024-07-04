@@ -121,6 +121,7 @@ func create_grid():
 			if not tiles.has(grid_y): tiles[grid_y]={}
 			if not tiles[grid_y].has(grid_x): tiles[grid_y][grid_x]={}
 			tiles[grid_y][grid_x]={"res":res, "tile":mesh_tile,"high":tile_data.high,"low":tile_data.low}
+			delete_tile.emit(grid_x,grid_y,self)
 			create_tile.emit(grid_x,grid_y,self)
 			total_num_created+=1
 			
@@ -134,7 +135,9 @@ func remove_tiles_by_distance():
 	for y in tiles.keys():
 		for x in tiles[y].keys():
 			var tile_pos = Vector3(x*tile_size,0,y*tile_size)
-			var tile_distance=follow.global_position.distance_to(tile_pos)
+			var follow_pos=Vector3.ZERO
+			if follow: follow_pos = follow.global_position
+			var tile_distance=follow_pos.distance_to(tile_pos)
 			
 			if tile_distance>=cleanup_distance:
 				var tile=tiles[y][x].tile
