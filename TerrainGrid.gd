@@ -68,12 +68,13 @@ func create_new():
 	create_grid()
 	terrain_created.emit(self)
 	
-func create_grid():
-	if base_map_image and base_map_image.is_compressed():
-		base_map_image.decompress()
+func create_grid():		
 	if not base_map_image and base_map:
 		base_map_image  = base_map.get_image()
 		base_map_image_size = base_map_image.get_size().x-1
+		
+	if base_map_image and base_map_image.is_compressed():
+		base_map_image.decompress()
 		
 	if half_tile_size==0:
 		half_tile_size = int(float(tile_size) / 2)
