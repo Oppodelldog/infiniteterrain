@@ -84,7 +84,7 @@ func create_grid():
 	var total_num_verts={}
 	var total_num_created=0
 	var f = Vector3.ZERO
-	if follow: f = follow.global_position
+	if follow and is_instance_valid(follow): f = follow.global_position
 	
 	for y in range(grid_extends_y.x, grid_extends_y.y + 1):
 		for x in range(grid_extends_x.x, grid_extends_x.y + 1):
@@ -302,7 +302,7 @@ func create_mesh_tile(steps:int, tile_data: Tiledata)->MeshInstance3D:
 func _process(_delta):
 	var tile_x:int
 	var tile_y:int
-	if follow:
+	if follow and is_instance_valid(follow):
 		tile_x = int(follow.global_position.x / tile_size)
 		tile_y = int(follow.global_position.z / tile_size)
 	
