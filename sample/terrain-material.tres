@@ -1,36 +1,35 @@
-[gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://b0gvxisevlo1p"]
+[gd_resource type="ShaderMaterial" load_steps=9 format=3 uid="uid://b0gvxisevlo1p"]
 
 [ext_resource type="Shader" uid="uid://376tm1qxptr6" path="res://addons/infiniteterrain/terrain.tres" id="1_yasog"]
 [ext_resource type="Texture2D" uid="uid://dadogiyvstmo3" path="res://addons/infiniteterrain/sample/tex_grass_high.jpg" id="2_qh1ns"]
 [ext_resource type="Texture2D" uid="uid://cv55xvv8lrkqd" path="res://addons/infiniteterrain/sample/tex_grass_low.jpg" id="3_q2dxg"]
 [ext_resource type="Texture2D" uid="uid://bbgcecqk1caot" path="res://addons/infiniteterrain/sample/tex_grass_high_normal.jpg" id="4_q8gxi"]
 [ext_resource type="Texture2D" uid="uid://c6f1667evb44v" path="res://addons/infiniteterrain/sample/tex_grass_low_normal.jpg" id="5_a4qeq"]
-[ext_resource type="Texture2D" uid="uid://lessclu68wai" path="res://addons/infiniteterrain/sample/tex_soil_high.jpg" id="6_bw6hu"]
-[ext_resource type="Texture2D" uid="uid://d1f1ilijorg26" path="res://addons/infiniteterrain/sample/tex_soil_low.jpg" id="7_mwnnx"]
-[ext_resource type="Texture2D" uid="uid://b2do0buuy7335" path="res://addons/infiniteterrain/sample/tex_soil_high_normal.jpg" id="8_tnonw"]
+[ext_resource type="Texture2D" uid="uid://b3ssl8uhy6wvd" path="res://material/dirt_aerial_02_2k.blend/dirt_aerial_02_diff_2k.jpg" id="6_tvh73"]
+[ext_resource type="Texture2D" uid="uid://dcvek0gdqth41" path="res://material/dirt_aerial_02_2k.blend/dirt_aerial_02_nor_gl_2k.jpg" id="8_02fc2"]
 [ext_resource type="Texture2D" uid="uid://pdrg3sln5qx2" path="res://addons/infiniteterrain/sample/tex_soil_low_normal.jpg" id="9_pxwv5"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_yasog")
 shader_parameter/texture_split = 6.48
-shader_parameter/tex2_high_uv_scale = 3.0
-shader_parameter/tex2_low_uv_scale = 1.0
-shader_parameter/tex2_res_min_distance = null
-shader_parameter/tex2_res_max_distance = 1.52
+shader_parameter/tex2_high_uv_scale = 30.0
+shader_parameter/tex2_low_uv_scale = 2.0
+shader_parameter/tex2_res_min_distance = 0.0
+shader_parameter/tex2_res_max_distance = 26.33
 shader_parameter/tex1_high_uv_scale = 2.07
 shader_parameter/tex1_low_uv_scale2 = 2.0
 shader_parameter/tex1_res_min_distance = null
-shader_parameter/tex1_res_max_distance = 30.0
+shader_parameter/tex1_res_max_distance = 46.68
 shader_parameter/metallic = null
 shader_parameter/roughness = null
 shader_parameter/specular = null
 shader_parameter/normal_strength = 0.8
-shader_parameter/tex2_high = ExtResource("6_bw6hu")
-shader_parameter/tex2_low = ExtResource("7_mwnnx")
+shader_parameter/tex2_high = ExtResource("6_tvh73")
+shader_parameter/tex2_low = ExtResource("6_tvh73")
 shader_parameter/tex1_high = ExtResource("2_qh1ns")
 shader_parameter/tex1_low = ExtResource("3_q2dxg")
-shader_parameter/tex2_normal_high = ExtResource("8_tnonw")
+shader_parameter/tex2_normal_high = ExtResource("8_02fc2")
 shader_parameter/tex2_normal_low = ExtResource("9_pxwv5")
 shader_parameter/tex1_normal_high = ExtResource("4_q8gxi")
 shader_parameter/tex1_normal_low = ExtResource("5_a4qeq")

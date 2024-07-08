@@ -160,7 +160,7 @@ default_input_values = [0, 10.0, 1, 50.0, 2, 0.5]
 op_type = 0
 
 [sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_eay5d"]
-default_input_values = [0, Vector2(0, 0), 1, Vector2(0, 0)]
+default_input_values = [0, Vector2(0, 0), 1, Vector2(1, 1)]
 op_type = 0
 operator = 2
 
@@ -429,6 +429,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(-744.319, 252.782)
 nodes/fragment/0/position = Vector2(4080, 920)
 nodes/fragment/2/node = SubResource("VisualShaderNodeTexture2DParameter_jac53")
 nodes/fragment/2/position = Vector2(640, -660)
@@ -503,13 +504,13 @@ nodes/fragment/48/position = Vector2(640, 3280)
 nodes/fragment/49/node = SubResource("VisualShaderNodeTexture_6l1yq")
 nodes/fragment/49/position = Vector2(1240, 3580)
 nodes/fragment/50/node = SubResource("VisualShaderNodeTexture2DParameter_a8q3e")
-nodes/fragment/50/position = Vector2(640, 2700)
+nodes/fragment/50/position = Vector2(660, 2720)
 nodes/fragment/51/node = SubResource("VisualShaderNodeTexture_pmqj2")
 nodes/fragment/51/position = Vector2(1220, 2980)
 nodes/fragment/52/node = SubResource("VisualShaderNodeMix_j1mv5")
 nodes/fragment/52/position = Vector2(1700, 2600)
 nodes/fragment/53/node = SubResource("VisualShaderNodeFloatParameter_lbdjj")
-nodes/fragment/53/position = Vector2(-1400, 3300)
+nodes/fragment/53/position = Vector2(-1360, 3320)
 nodes/fragment/54/node = SubResource("VisualShaderNodeVectorCompose_bidg5")
 nodes/fragment/54/position = Vector2(-640, 2800)
 nodes/fragment/55/node = SubResource("VisualShaderNodeFloatParameter_asvgf")
@@ -527,11 +528,11 @@ nodes/fragment/60/position = Vector2(-980, 2420)
 nodes/fragment/61/node = SubResource("VisualShaderNodeVectorCompose_0kgwd")
 nodes/fragment/61/position = Vector2(-620, 3320)
 nodes/fragment/62/node = SubResource("VisualShaderNodeVectorOp_eay5d")
-nodes/fragment/62/position = Vector2(-280, 3160)
+nodes/fragment/62/position = Vector2(-240, 3200)
 nodes/fragment/63/node = SubResource("VisualShaderNodeFloatParameter_ma22t")
 nodes/fragment/63/position = Vector2(-1800, 2240)
 nodes/fragment/64/node = SubResource("VisualShaderNodeFloatParameter_ullnk")
 nodes/fragment/64/position = Vector2(-1780, 2540)
 nodes/fragment/65/node = SubResource("VisualShaderNodeFloatParameter_3agdn")
 nodes/fragment/65/position = Vector2(2060, 520)
-nodes/fragment/connections = PackedInt32Array(2, 0, 3, 2, 5, 1, 4, 0, 13, 0, 17, 1, 11, 0, 17, 0, 18, 0, 21, 2, 17, 0, 21, 0, 22, 0, 0, 9, 23, 0, 0, 2, 24, 0, 0, 3, 25, 0, 0, 4, 26, 0, 0, 10, 27, 0, 28, 0, 27, 0, 29, 0, 8, 0, 29, 1, 28, 0, 31, 1, 29, 0, 31, 0, 31, 0, 32, 2, 34, 0, 32, 1, 35, 0, 36, 2, 3, 0, 37, 1, 36, 0, 37, 0, 32, 0, 37, 2, 37, 0, 4, 4, 39, 0, 13, 0, 39, 0, 13, 1, 17, 0, 36, 0, 41, 0, 40, 0, 41, 0, 40, 1, 42, 0, 3, 0, 44, 0, 43, 2, 43, 0, 45, 1, 21, 0, 45, 0, 32, 0, 45, 2, 42, 0, 43, 0, 5, 1, 22, 0, 29, 0, 5, 0, 11, 0, 42, 1, 40, 0, 42, 0, 33, 0, 32, 0, 46, 0, 47, 2, 61, 0, 62, 1, 48, 0, 49, 2, 62, 0, 49, 0, 64, 0, 60, 1, 50, 0, 51, 2, 47, 0, 52, 1, 51, 0, 52, 0, 60, 0, 52, 2, 53, 0, 61, 0, 53, 0, 61, 1, 62, 0, 51, 0, 55, 0, 54, 0, 55, 0, 54, 1, 56, 0, 47, 0, 58, 0, 57, 2, 57, 0, 59, 1, 49, 0, 59, 0, 60, 0, 59, 2, 56, 0, 57, 0, 54, 0, 56, 0, 63, 0, 60, 0, 11, 0, 56, 1, 11, 0, 62, 0, 52, 0, 4, 3, 52, 0, 4, 5, 45, 0, 22, 4, 59, 0, 22, 3, 59, 0, 22, 5, 31, 0, 60, 2, 4, 0, 0, 0, 65, 0, 4, 1, 65, 0, 22, 1)
+nodes/fragment/connections = PackedInt32Array(2, 0, 3, 2, 5, 1, 4, 0, 13, 0, 17, 1, 11, 0, 17, 0, 18, 0, 21, 2, 17, 0, 21, 0, 22, 0, 0, 9, 23, 0, 0, 2, 24, 0, 0, 3, 25, 0, 0, 4, 26, 0, 0, 10, 27, 0, 28, 0, 27, 0, 29, 0, 8, 0, 29, 1, 28, 0, 31, 1, 29, 0, 31, 0, 31, 0, 32, 2, 34, 0, 32, 1, 35, 0, 36, 2, 3, 0, 37, 1, 36, 0, 37, 0, 32, 0, 37, 2, 37, 0, 4, 4, 39, 0, 13, 0, 39, 0, 13, 1, 17, 0, 36, 0, 41, 0, 40, 0, 41, 0, 40, 1, 42, 0, 3, 0, 44, 0, 43, 2, 43, 0, 45, 1, 21, 0, 45, 0, 32, 0, 45, 2, 42, 0, 43, 0, 5, 1, 22, 0, 29, 0, 5, 0, 11, 0, 42, 1, 40, 0, 42, 0, 33, 0, 32, 0, 46, 0, 47, 2, 48, 0, 49, 2, 62, 0, 49, 0, 64, 0, 60, 1, 50, 0, 51, 2, 47, 0, 52, 1, 51, 0, 52, 0, 60, 0, 52, 2, 53, 0, 61, 0, 53, 0, 61, 1, 62, 0, 51, 0, 55, 0, 54, 0, 55, 0, 54, 1, 56, 0, 47, 0, 58, 0, 57, 2, 57, 0, 59, 1, 49, 0, 59, 0, 60, 0, 59, 2, 56, 0, 57, 0, 54, 0, 56, 0, 63, 0, 60, 0, 11, 0, 56, 1, 11, 0, 62, 0, 52, 0, 4, 3, 52, 0, 4, 5, 45, 0, 22, 4, 59, 0, 22, 3, 59, 0, 22, 5, 31, 0, 60, 2, 4, 0, 0, 0, 65, 0, 4, 1, 65, 0, 22, 1, 61, 0, 62, 1)

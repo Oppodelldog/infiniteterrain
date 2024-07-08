@@ -261,10 +261,7 @@ func create_mesh_tile(steps:int, tile_data: Tiledata)->MeshInstance3D:
 			var uv_top=float(y)/float(num_verts_per_row)
 			var uv_right=float(x+1)/float(num_verts_per_row)
 			var uv_bottom=float(y+1)/float(num_verts_per_row)
-			uv_left=0
-			uv_right=1
-			uv_top=0
-			uv_bottom=1
+
 			uvs.push_back(Vector2(uv_left, uv_top))
 			uvs.push_back(Vector2(uv_right, uv_bottom))
 			uvs.push_back(Vector2(uv_left, uv_bottom))
@@ -289,7 +286,7 @@ func create_mesh_tile(steps:int, tile_data: Tiledata)->MeshInstance3D:
 
 	st.generate_normals()
 	st.generate_tangents()
-		
+
 	var tmp_mesh = ArrayMesh.new()
 	st.commit(tmp_mesh)
 	
