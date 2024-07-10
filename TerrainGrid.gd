@@ -61,9 +61,9 @@ func tile_exists(x:int,y:int)->bool:
 	return tiles.has(y) and tiles[y].has(x)
 	
 func create_new():
-	before_create.emit(self)
 	tiles={}
 	height_overrride={}
+	before_create.emit(self)
 	clear_children()
 	create_grid()
 	terrain_created.emit(self)
@@ -257,10 +257,10 @@ func create_mesh_tile(steps:int, tile_data: Tiledata)->MeshInstance3D:
 			verts.push_back(bottom_right)
 			verts.push_back(bottom_left)
 			
-			var uv_left=float(x)/float(num_verts_per_row)
-			var uv_top=float(y)/float(num_verts_per_row)
-			var uv_right=float(x+1)/float(num_verts_per_row)
-			var uv_bottom=float(y+1)/float(num_verts_per_row)
+			var uv_left=float(x)/float(num_verts_per_row-1)
+			var uv_top=float(y)/float(num_verts_per_row-1)
+			var uv_right=float(x+1)/float(num_verts_per_row-1)
+			var uv_bottom=float(y+1)/float(num_verts_per_row-1)
 
 			uvs.push_back(Vector2(uv_left, uv_top))
 			uvs.push_back(Vector2(uv_right, uv_bottom))
