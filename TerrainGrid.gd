@@ -170,6 +170,12 @@ func height(x:float,y:float)->float:
 	var x_img=x_rel*base_map_image_size if base_map_image_size else 0
 	var y_img=y_rel*base_map_image_size if base_map_image_size else 0
 	
+	var xi = int(x)
+	var yi = int(y)
+	if height_overrride.has(yi):
+		if height_overrride[yi].has(xi):
+			return height_overrride[yi][xi]	
+	
 	var h = 0
 	var base_map_h = base_map_image.get_pixel(x_img,y_img).r * base_map_height if base_map_image else 0
 	var detail_h = details_noise.get_noise_2d(x, y) * details_noise_height if details_noise else 0
@@ -199,9 +205,6 @@ func create_tile_vertices(from:Vector2, to:Vector2, steps:int) -> Tiledata:
 			var h = height(x,y)
 			var yi=int(y)
 			var xi=int(x)
-			if height_overrride.has(yi):
-				if height_overrride[yi].has(xi):
-					h=height_overrride[yi][xi]
 			row.push_back(Vector3(xi, h, yi))
 			if h>max_h: max_h=h
 			if h<min_h:min_h=h
