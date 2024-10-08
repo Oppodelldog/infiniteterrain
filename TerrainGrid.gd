@@ -311,5 +311,3 @@ func _process(_delta):
 		actual_tile.x = tile_x
 		actual_tile.y = tile_y
 		create_grid()
-
-

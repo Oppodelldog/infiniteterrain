@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=24 format=3 uid="uid://juarrxd4via1"]
+[gd_resource type="ShaderMaterial" load_steps=24 format=3 uid="uid://shfnipwmfhc3"]
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_qm6r3"]
 input_name = "uv"
@@ -234,11 +234,11 @@ load_path = "res://.godot/imported/tex_soil_low.jpg-c2c71fb0f7164e636c99f7fc9cde
 [resource]
 render_priority = 0
 shader = SubResource("VisualShader_0epuv")
-shader_parameter/texture_split = 6.48
+shader_parameter/texture_split = -0.03
 shader_parameter/tex2_low_uv_scale = 1.0
 shader_parameter/tex1_low_uv_scale2 = 2.0
-shader_parameter/metallic = null
-shader_parameter/roughness = null
-shader_parameter/specular = null
+shader_parameter/metallic = 0.003
+shader_parameter/roughness = 0.312
+shader_parameter/specular = 0.011
 shader_parameter/tex2_low = SubResource("CompressedTexture2D_a8755")
 shader_parameter/tex1_low = SubResource("CompressedTexture2D_02hnx")
