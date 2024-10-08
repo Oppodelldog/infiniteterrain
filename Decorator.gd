@@ -5,6 +5,7 @@ class_name Decorator extends Node
 @export var amount:int=10
 @export var min_height:float
 @export var max_height:float
+@export var fixed_height:float
 @export var random_y_rot:bool=true
 @export var offset:Vector3
 @export var min_scale:float
@@ -30,8 +31,11 @@ func decorate_tile(x:int, y:int, grid:TerrainGrid):
 		var y_rot    = randf_range(0, 2 * PI) if random_y_rot else 0.0
 		var scale    = 1
 		
-		if min_height != 0 and height < min_height: continue
-		if max_height != 0 and height > max_height: continue
+		if fixed_height!=0:
+			height=fixed_height
+		else:
+			if min_height != 0 and height < min_height: continue
+			if max_height != 0 and height > max_height: continue
 		
 		if min_scale>0: scale = min_scale
 		if max_scale>0: scale = randf_range(min_scale,max_scale)
@@ -44,7 +48,8 @@ func decorate_tile(x:int, y:int, grid:TerrainGrid):
 func undecorate_tile(x:int, y:int, grid:TerrainGrid):
 	var container = find_child(container_name(x,y),false,false)
 	if container:
-		container.queue_free()
+		if Engine.is_editor_hint(): container.free()
+		else: container.queue_free()
 
 func container_name(x:int,y:int):
 	return str(x) + "_" + str(y)

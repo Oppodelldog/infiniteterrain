@@ -1,7 +1,8 @@
 @tool
 class_name TerrainGrid extends Node3D
 
-signal terrain_created
+signal before_create(grid:TerrainGrid)
+signal terrain_created(grid:TerrainGrid)
 signal create_tile(x:int,y:int,grid:TerrainGrid)
 signal delete_tile(x:int,y:int,grid:TerrainGrid)
 
@@ -62,14 +63,18 @@ func tile_exists(x:int,y:int)->bool:
 func create_new():
 	tiles={}
 	height_overrride={}
+	before_create.emit(self)
 	clear_children()
 	create_grid()
-	terrain_created.emit()
+	terrain_created.emit(self)
 	
-func create_grid():
+func create_grid():		
 	if not base_map_image and base_map:
 		base_map_image  = base_map.get_image()
 		base_map_image_size = base_map_image.get_size().x-1
+		
+	if base_map_image and base_map_image.is_compressed():
+		base_map_image.decompress()
 		
 	if half_tile_size==0:
 		half_tile_size = int(float(tile_size) / 2)
@@ -79,7 +84,7 @@ func create_grid():
 	var total_num_verts={}
 	var total_num_created=0
 	var f = Vector3.ZERO
-	if follow: f = follow.global_position
+	if follow and is_instance_valid(follow): f = follow.global_position
 	
 	for y in range(grid_extends_y.x, grid_extends_y.y + 1):
 		for x in range(grid_extends_x.x, grid_extends_x.y + 1):
@@ -119,6 +124,7 @@ func create_grid():
 			if not tiles.has(grid_y): tiles[grid_y]={}
 			if not tiles[grid_y].has(grid_x): tiles[grid_y][grid_x]={}
 			tiles[grid_y][grid_x]={"res":res, "tile":mesh_tile,"high":tile_data.high,"low":tile_data.low}
+			delete_tile.emit(grid_x,grid_y,self)
 			create_tile.emit(grid_x,grid_y,self)
 			total_num_created+=1
 			
@@ -132,7 +138,9 @@ func remove_tiles_by_distance():
 	for y in tiles.keys():
 		for x in tiles[y].keys():
 			var tile_pos = Vector3(x*tile_size,0,y*tile_size)
-			var tile_distance=follow.global_position.distance_to(tile_pos)
+			var follow_pos=Vector3.ZERO
+			if follow: follow_pos = follow.global_position
+			var tile_distance=follow_pos.distance_to(tile_pos)
 			
 			if tile_distance>=cleanup_distance:
 				var tile=tiles[y][x].tile
@@ -156,10 +164,17 @@ func clear_children():
 		n.queue_free()
 
 func height(x:float,y:float)->float:
-	var x_rel=float(x)/float(tile_size)+0.5
-	var y_rel=float(y)/float(tile_size)+0.5
+	var x_rel=wrapf(float(x)/float(tile_size)+0.5,0,1)
+	var y_rel=wrapf(float(y)/float(tile_size)+0.5,0,1)
+	
 	var x_img=x_rel*base_map_image_size if base_map_image_size else 0
-	var y_img=x_rel*base_map_image_size if base_map_image_size else 0
+	var y_img=y_rel*base_map_image_size if base_map_image_size else 0
+	
+	var xi = int(x)
+	var yi = int(y)
+	if height_overrride.has(yi):
+		if height_overrride[yi].has(xi):
+			return height_overrride[yi][xi]	
 	
 	var h = 0
 	var base_map_h = base_map_image.get_pixel(x_img,y_img).r * base_map_height if base_map_image else 0
@@ -190,9 +205,6 @@ func create_tile_vertices(from:Vector2, to:Vector2, steps:int) -> Tiledata:
 			var h = height(x,y)
 			var yi=int(y)
 			var xi=int(x)
-			if height_overrride.has(yi):
-				if height_overrride[yi].has(xi):
-					h=height_overrride[yi][xi]
 			row.push_back(Vector3(xi, h, yi))
 			if h>max_h: max_h=h
 			if h<min_h:min_h=h
@@ -248,14 +260,11 @@ func create_mesh_tile(steps:int, tile_data: Tiledata)->MeshInstance3D:
 			verts.push_back(bottom_right)
 			verts.push_back(bottom_left)
 			
-			var uv_left=float(x)/float(num_verts_per_row)
-			var uv_top=float(y)/float(num_verts_per_row)
-			var uv_right=float(x+1)/float(num_verts_per_row)
-			var uv_bottom=float(y+1)/float(num_verts_per_row)
-			uv_left=0
-			uv_right=1
-			uv_top=0
-			uv_bottom=1
+			var uv_left=float(x)/float(num_verts_per_row-1)
+			var uv_top=float(y)/float(num_verts_per_row-1)
+			var uv_right=float(x+1)/float(num_verts_per_row-1)
+			var uv_bottom=float(y+1)/float(num_verts_per_row-1)
+
 			uvs.push_back(Vector2(uv_left, uv_top))
 			uvs.push_back(Vector2(uv_right, uv_bottom))
 			uvs.push_back(Vector2(uv_left, uv_bottom))
@@ -280,7 +289,7 @@ func create_mesh_tile(steps:int, tile_data: Tiledata)->MeshInstance3D:
 
 	st.generate_normals()
 	st.generate_tangents()
-		
+
 	var tmp_mesh = ArrayMesh.new()
 	st.commit(tmp_mesh)
 	
@@ -293,7 +302,7 @@ func create_mesh_tile(steps:int, tile_data: Tiledata)->MeshInstance3D:
 func _process(_delta):
 	var tile_x:int
 	var tile_y:int
-	if follow:
+	if follow and is_instance_valid(follow):
 		tile_x = int(follow.global_position.x / tile_size)
 		tile_y = int(follow.global_position.z / tile_size)
 	

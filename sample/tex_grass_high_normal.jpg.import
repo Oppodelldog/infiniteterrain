@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbgcecqk1caot"
 path.s3tc="res://.godot/imported/tex_grass_high_normal.jpg-ee7beb8fadad4ffe16aa9ad611d5a64e.s3tc.ctex"
+path.etc2="res://.godot/imported/tex_grass_high_normal.jpg-ee7beb8fadad4ffe16aa9ad611d5a64e.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://addons/infiniteterrain/sample/tex_grass_high_normal.jpg"
-dest_files=["res://.godot/imported/tex_grass_high_normal.jpg-ee7beb8fadad4ffe16aa9ad611d5a64e.s3tc.ctex"]
+dest_files=["res://.godot/imported/tex_grass_high_normal.jpg-ee7beb8fadad4ffe16aa9ad611d5a64e.s3tc.ctex", "res://.godot/imported/tex_grass_high_normal.jpg-ee7beb8fadad4ffe16aa9ad611d5a64e.etc2.ctex"]
 
 [params]
 
