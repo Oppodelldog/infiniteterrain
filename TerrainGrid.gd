@@ -26,14 +26,13 @@ var base_map_image:Image
 
 var actual_tile:Vector2
 var height_overrride:Dictionary
-#tiles[y][x]={"res":10, "mesh":mesh_instance,"high":10,"low":-10}
 var tiles:Dictionary={}
 var half_tile_size:float
 	
 func _run():
 	create_grid()
 	
-func _ready():	
+func _ready():
 	if create_on_ready: create_new()
 	
 func get_from(grid_x:int,grid_y:int)->Vector2:

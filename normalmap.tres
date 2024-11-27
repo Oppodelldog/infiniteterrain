@@ -1,6 +1,8 @@
-[gd_resource type="NoiseTexture2D" load_steps=2 format=3 uid="uid://c0uex7f4uju3u"]
+[gd_resource type="NoiseTexture2D" load_steps=3 format=3 uid="uid://c0uex7f4uju3u"]
 
-[ext_resource type="FastNoiseLite" uid="uid://cubk3n7smt2al" path="res://addons/terrain_grid_plugin/terrain-noise.tres" id="1_p7c1o"]
+[sub_resource type="Gradient" id="Gradient_cnmw6"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_c04xa"]
 
 [resource]
 width = 4000
@@ -9,4 +11,5 @@ seamless = true
 as_normal_map = true
 bump_strength = 2.8
 normalize = false
-noise = ExtResource("1_p7c1o")
+color_ramp = SubResource("Gradient_cnmw6")
+noise = SubResource("FastNoiseLite_c04xa")

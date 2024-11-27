@@ -1,6 +1,7 @@
 [gd_resource type="NoiseTexture2D" load_steps=2 format=3 uid="uid://c3ut5bn51p6fb"]
 
-[ext_resource type="FastNoiseLite" uid="uid://cubk3n7smt2al" path="res://addons/terrain_grid_plugin/terrain-noise.tres" id="1_c83sk"]
+[ext_resource type="FastNoiseLite" uid="uid://d3ngfc6flja53" path="res://addons/infiniteterrain/terrain-basic.tres" id="1_c83sk"]
+
 
 [resource]
 width = 4000

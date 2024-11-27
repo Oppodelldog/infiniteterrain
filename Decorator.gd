@@ -53,10 +53,3 @@ func undecorate_tile(x:int, y:int, grid:TerrainGrid):
 
 func container_name(x:int,y:int):
 	return str(x) + "_" + str(y)
-
-
-
-
-
-
-

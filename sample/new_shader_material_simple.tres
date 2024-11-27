@@ -1,5 +1,8 @@
 [gd_resource type="ShaderMaterial" load_steps=24 format=3 uid="uid://shfnipwmfhc3"]
 
+[ext_resource type="Texture2D" uid="uid://cjns1nq5nmvc2" path="res://textures/grass.tres" id="1_j2cmc"]
+[ext_resource type="Texture2D" uid="uid://ywmkgqbw6p3t" path="res://textures/soil.tres" id="2_e05gp"]
+
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_qm6r3"]
 input_name = "uv"
 
@@ -225,12 +228,6 @@ nodes/fragment/65/node = SubResource("VisualShaderNodeFloatParameter_03800")
 nodes/fragment/65/position = Vector2(620, 800)
 nodes/fragment/connections = PackedInt32Array(2, 0, 3, 2, 5, 1, 4, 0, 23, 0, 0, 2, 25, 0, 0, 4, 27, 0, 29, 0, 8, 0, 29, 1, 41, 0, 40, 0, 41, 0, 40, 1, 42, 0, 3, 0, 29, 0, 5, 0, 11, 0, 42, 1, 40, 0, 42, 0, 46, 0, 47, 2, 55, 0, 54, 0, 55, 0, 54, 1, 56, 0, 47, 0, 54, 0, 56, 0, 11, 0, 56, 1, 4, 0, 0, 0, 65, 0, 4, 1, 3, 0, 4, 4, 47, 0, 4, 5, 47, 0, 4, 3, 24, 0, 0, 3)
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_02hnx"]
-load_path = "res://.godot/imported/tex_grass_low.jpg-0d9ab906904b602e3a13f0bb19475991.s3tc.ctex"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_a8755"]
-load_path = "res://.godot/imported/tex_soil_low.jpg-c2c71fb0f7164e636c99f7fc9cde6fc7.s3tc.ctex"
-
 [resource]
 render_priority = 0
 shader = SubResource("VisualShader_0epuv")
@@ -240,5 +237,5 @@ shader_parameter/tex1_low_uv_scale2 = 2.0
 shader_parameter/metallic = 0.003
 shader_parameter/roughness = 0.312
 shader_parameter/specular = 0.011
-shader_parameter/tex2_low = SubResource("CompressedTexture2D_a8755")
-shader_parameter/tex1_low = SubResource("CompressedTexture2D_02hnx")
+shader_parameter/tex2_low = ExtResource("2_e05gp")
+shader_parameter/tex1_low = ExtResource("1_j2cmc")
